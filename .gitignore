@@ -38,7 +38,6 @@
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dicionários
-
 # Arquivos confidenciais ou com alta rotatividade:
 .idea/**/fontes de dados/
 .idea/**/dataSources.ids
@@ -130,7 +129,7 @@ módulos.xml
 # Consulte https://github.com/joeblau/gitignore.io/issues/186 e https://github.com/joeblau/gitignore.io/issues/ 360
 
 .idea/
-
+.idea/inspectionProfiles
 # Motivo: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
 *.iml
