@@ -138,3 +138,5 @@ módulos.xml
 *.ipr
 /shelf/
 /workspace.xml
+.idea/workspace.xml
+

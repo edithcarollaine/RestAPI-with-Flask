@@ -23,3 +23,16 @@
     Possui: POST E GET
 
     Finalidade: Base para aplicação dos files anteriores.
+
+# Directory: First Flask-Restful
+    
+    Possui um file de aplicação de extensão restful em flask.
+    
+# Directory: Practical Exercise *(Dentro da First Flask-Restful)*
+    
+    Possui um file de exercício fazendo operações 
+    
+    Possui: GET, PUT, DELETE e POST
+    
+    Finalidade: Adicionar nova habilidade, lista todas as existentes, altera habilidade, deleta e faz buscas pelo id.
+ 
