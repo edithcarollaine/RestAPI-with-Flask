@@ -35,4 +35,13 @@
     Possui: GET, PUT, DELETE e POST
     
     Finalidade: Adicionar nova habilidade, lista todas as existentes, altera habilidade, deleta e faz buscas pelo id.
- 
+
+# Directory: API DataBase
+
+    Possui dois files de testes fazendo operações para melhorar o entendimento de API with DataBase
+
+    Possui: INSERT, UPDATE e DELETE
+
+    DataBase: SQLAlchemy
+
+    Finalidade: Adiciona, atualiza e deleta informações do banco de dados
