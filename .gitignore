@@ -87,7 +87,8 @@ tecido.propriedades
 # Motivo do comentário: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
 *.iml
-módulos.xml
+modules.xml
+workspace.xml
 .idea/misc.xml
 *.ipr
 
@@ -133,10 +134,8 @@ módulos.xml
 # Motivo: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
 *.iml
-módulos.xml
+modules.xml
 .idea/misc.xml
 *.ipr
 /shelf/
-/workspace.xml
-.idea/workspace.xml
 
