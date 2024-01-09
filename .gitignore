@@ -1,6 +1,5 @@
 # created by virtualenv automatically
 .venv/bin
-.idea
 # created by virtualenv automatically
 # It's better to unpack these files and commit the raw source because
 # git has its own built in compression methods.
@@ -36,6 +35,8 @@
 *.txz
 *.vir
 *.venv
+.idea/*.xml
+.idea/*.iml
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dicionários
@@ -133,10 +134,5 @@ tecido.propriedades
 .idea/
 .idea/inspectionProfiles
 # Motivo: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
-
-*.iml
-modules.xml
-.idea/misc.xml
-*.ipr
 /shelf/
 
