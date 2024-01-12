@@ -21,6 +21,8 @@ class Pessoas(Base):
     id = Column(Integer, primary_key=True)
     nome_pessoa = Column(String(40), index=True)
     idade = Column(Integer)
+    atividade = relationship('Atividades', back_populates='pessoa')
+
 
     def __repr__(self):
         return f'\nPessoa com nome: {self.nome_pessoa} e idade: {self.idade}'
@@ -39,10 +41,10 @@ class Atividades(Base):
     id = Column(Integer, primary_key=True)
     nome_atividade = Column(String(100), index=True)
     pessoa_id = Column(Integer, ForeignKey('pessoas.id'))
-    pessoa = relationship('Pessoas')
+    pessoa = relationship('Pessoas', back_populates='atividade')
 
     def __repr__(self):
-        return f'\nPAtividade: {self.nome_atividade}'
+        return f'\nAtividade: {self.nome_atividade}'
 
     def save(self):
         db_session.add(self)
@@ -51,6 +53,7 @@ class Atividades(Base):
     def delete(self):
         db_session.delete(self)
         db_session.commit()
+
 def init_db():
     Base.metadata.create_all(bind=engine)
 

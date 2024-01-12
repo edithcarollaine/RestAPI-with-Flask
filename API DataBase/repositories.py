@@ -1,10 +1,11 @@
 import pprint
 
 from models import Pessoas
+from models import Atividades
 
 # insere dados na tabela pessoa
 def insere_pessoas():
-    pessoa = Pessoas(nome_pessoa='Paulo', idade=20)
+    pessoa = Pessoas(nome_pessoa='Marcos', idade=30)
     print(pessoa)
     pessoa.save()
 
@@ -30,5 +31,5 @@ def exclui_pessoas():
 if __name__ == '__main__':
     #insere_pessoas()
     #altera_pessoas()
-    exclui_pessoas()
-    consulta_pessoas()
+    #exclui_pessoas()
+    #consulta_pessoas()
