@@ -27,9 +27,7 @@ def exclui_pessoas():
     exclui = Pessoas.query.filter_by(nome_pessoa='Paulo').first()
     exclui.delete()
 
-
-if __name__ == '__main__':
-    #insere_pessoas()
-    #altera_pessoas()
-    #exclui_pessoas()
-    #consulta_pessoas()
+#insere_pessoas()
+#altera_pessoas()
+#exclui_pessoas()
+#consulta_pessoas()
