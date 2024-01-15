@@ -69,13 +69,13 @@ class ListaPessoasAPI(Resource):
 
     def post(self):
         dados = json.loads(request.data)
-        verifica = Pessoas.query.filter_by(nome_pessoa=dados['nome']).first()   # filtra pelo nome para saber se possui o mesmo nome no banco de dados
+        verifica = Pessoas.query.filter_by(nome_pessoa=dados['nome']).first()  # Filtra pelo nome para saber se possui o mesmo nome no banco de dados
 
         # Se retornar verdadeiro, ele não adiciona o nome ao banco de dados e retorna o erro
         if verifica:
             return {'status': 'Error', 'mensagem': 'Nome ja existe no DataBase'}
 
-        # Se retornar false, adiciona o nome nome ao banco de dados
+        # Se retornar false, adiciona o nome ao banco de dados
         else:
             adicionar = Pessoas(nome_pessoa=dados['nome'], idade=dados['idade'])
 
@@ -122,36 +122,18 @@ class ListaAtividadeAPI(Resource):
 
 class AtividadesAPI(Resource):
 
-    # MÉTODO PUT AINDA NÃO ESTÁ FUNCIONANDO COMO DESEJADO
-    def put(self, pessoa):
-        dados = json.loads(request.data)
-        alterar_atividade = Atividades.query.filter_by(nome_atividade=dados['atividades']).first()
+    def get(self, pessoa):
+        buscar = Pessoas.query.filter_by(nome_pessoa=pessoa).first()
 
-        if alterar_atividade:
-            # verifica se o nome está no banco de dados
-            verifica = Pessoas.query.filter_by(nome_pessoa=dados.get('pessoa')).first()
-            if not verifica:
-                return {'status': 'Error', 'mensagem': 'Pessoa não encontrada'}, 404
+        try:
+            atividades = [{'id': atividade.id, 'pessoa': atividade.pessoa.nome_pessoa, 'atividades': atividade.nome_atividade} for atividade in
+                          buscar.atividade]
+        except Exception as e:
+            print(f"Erro ao encontrar pessoa: {e}")
+            return {'status': 'Error', 'mensagem': 'Erro ao encontrar pessoa'}, 500
 
-            # aplicar e salvar alterações
-            try:
-                alterar_atividade.nome_atividade = dados.get('atividades,')
-                alterar_atividade.pessoa = pessoa
+        return atividades
 
-                alterar_atividade.save()
-            except Exception as e:
-                print(f"Erro ao alterar atividade: {e}")
-                return {'status': 'Error', 'mensagem': 'Erro ao alterar a atividade'}, 500
-
-            response = {
-                'id': alterar_atividade.id,
-                'pessoa': alterar_atividade.pessoa.nome_pessoa,
-                'atividade': alterar_atividade.nome_atividade
-            }
-
-            return response
-        else:
-            return {'mensagem': 'Atividade nao encontrada'}, 404
 
     def delete(self, pessoa):
         # Verifica se a pessoa está no database
@@ -173,6 +155,7 @@ class AtividadesAPI(Resource):
                 return {'status': 'Error', 'mensagem': 'Erro ao salvar a atividade'}, 500
         else:
             return {'status': 'Error', 'mensagem': 'Atividade não encontrada para esta pessoa'}, 404
+
 
 # ROTAS
 api.add_resource(PessoasAPI, '/pessoa/<string:nome>')
