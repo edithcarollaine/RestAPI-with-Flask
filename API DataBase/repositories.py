@@ -27,9 +27,16 @@ def exclui_pessoas():
     exclui = Pessoas.query.filter_by(nome_pessoa='Paulo').first()
     exclui.delete()
 
+def consulta_pessoa_atividades():
+    consulta = Atividades.query.all()
+    print(consulta)
 
+def delete_pessoa_atividade():
+    deleta = Atividades.query.filter_by(nome_atividade='Desenvolver front end do sistema web com python e Django').first()
+    deleta.delete()
 #insere_pessoas()
 #altera_pessoas()
 #exclui_pessoas()
 #consulta_pessoas()
-consulta_pessoa_atividades()
+#delete_pessoa_atividade()
+#consulta_pessoa_atividades()

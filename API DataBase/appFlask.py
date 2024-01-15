@@ -5,6 +5,7 @@ from flask import request
 
 from flask_restful import Resource
 from flask_restful import Api
+from sqlalchemy.orm import joinedload
 
 from models import Pessoas
 from models import Atividades
@@ -94,31 +95,41 @@ class ListaAtividadeAPI(Resource):
 
     def get(self):
         lista = Atividades.query.all()
-        response = [{'id': result.id, 'pessoa': result.pessoa.nome_pessoa, 'atividades': result.nome_atividade} for result in lista]
+        try:
+            response = [{'id': atividade.id, 'pessoa': atividade.pessoa.nome_pessoa if atividade.pessoa is not None else None, 'atividades': atividade.nome_atividade} for atividade in lista]
+        except Exception as e:
+            print(f"Erro ao encontrar pessoa: {e}")
+            return {'status': 'Error', 'mensagem': 'Erro ao encontrar pessoa'}, 500
+
         return response
 
     def post(self):
         dados = json.loads(request.data)
         # verifica se o nome está no banco de dados
         pessoa = Pessoas.query.filter_by(nome_pessoa=dados['pessoa']).first()
-        if not pessoa:
-            return {'status': 'Error', 'mensagem': 'Pessoa não encontrada'}, 404
 
-        adicionar_atividade = Atividades(nome_atividade=dados['atividade'], pessoa=pessoa)
+        if pessoa is None:
+            # Se a pessoa não existir, crie uma nova
+            pessoa = Pessoas(nome_pessoa=dados['pessoa'])
 
-        try:
-            adicionar_atividade.save()
-        except Exception as e:
-            print(f"Erro ao salvar atividade: {e}")
-            return {'status': 'Error', 'mensagem': 'Erro ao salvar a atividade'}, 500
+        if pessoa is not None:
+            adicionar_atividade = Atividades(nome_atividade=dados['atividade'], pessoa=pessoa)
 
-        response = {
-            'id': adicionar_atividade.id,
-            'pessoa': adicionar_atividade.pessoa.nome_pessoa,
-            'atividade': adicionar_atividade.nome_atividade
-        }
+            try:
+                adicionar_atividade.save()
+            except Exception as e:
+                print(f"Erro ao salvar atividade: {e}")
+                return {'status': 'Error', 'mensagem': 'Erro ao salvar a atividade'}, 500
 
-        return response
+            response = {
+                'id': adicionar_atividade.id,
+                'pessoa': adicionar_atividade.pessoa.nome_pessoa,
+                'atividade': adicionar_atividade.nome_atividade
+            }
+
+            return response
+        else:
+            return {'status': 'Error', 'mensagem': 'Pessoa não encontrada no banco de dados'}, 404
 
 class AtividadesAPI(Resource):
 
@@ -148,6 +159,7 @@ class AtividadesAPI(Resource):
         # Deleta atividade e identifica o erro caso não tenha conseguido deletar
         if atividade:
             try:
+                pessoa.delete()
                 atividade.delete()
                 return {f'status': 'sucesso!', 'mensagem': 'Atividade de pessoa removida.'}
             except Exception as e:
@@ -155,6 +167,34 @@ class AtividadesAPI(Resource):
                 return {'status': 'Error', 'mensagem': 'Erro ao salvar a atividade'}, 500
         else:
             return {'status': 'Error', 'mensagem': 'Atividade não encontrada para esta pessoa'}, 404
+
+
+    def put(self, pessoa):
+        alterar = Atividades.query.filter(Atividades.pessoa.has(nome_pessoa=pessoa)).first()
+
+        if alterar:
+            dados = json.loads(request.data)
+
+            if 'pessoa' in dados:
+                novo_nome_pessoa = dados['pessoa']
+                if alterar.pessoa.nome_pessoa != novo_nome_pessoa:
+                    pessoa_existente = Pessoas.query.filter_by(nome_pessoa=novo_nome_pessoa).first()
+                    if not pessoa_existente:
+                        alterar.pessoa.nome_pessoa = novo_nome_pessoa
+            if 'atividade' in dados:
+                alterar.nome_atividade = dados['atividade']
+
+            alterar.save()
+
+            response = {
+                'id': alterar.id,
+                'pessoa': alterar.pessoa.nome_pessoa,
+                'atividade': alterar.nome_atividade
+            }
+
+            return response
+        else:
+            return {'mensagem': 'Pessoa nao encontrada'}, 404
 
 
 # ROTAS
