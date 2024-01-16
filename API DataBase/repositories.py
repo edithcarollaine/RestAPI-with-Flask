@@ -2,6 +2,7 @@ import pprint
 
 from models import Pessoas
 from models import Atividades
+from models import Usuarios
 
 # insere dados na tabela pessoa
 def insere_pessoas():
@@ -34,9 +35,26 @@ def consulta_pessoa_atividades():
 def delete_pessoa_atividade():
     deleta = Atividades.query.filter_by(nome_atividade='Desenvolver front end do sistema web com python e Django').first()
     deleta.delete()
-#insere_pessoas()
-#altera_pessoas()
-#exclui_pessoas()
-#consulta_pessoas()
-#delete_pessoa_atividade()
-#consulta_pessoa_atividades()
+
+def insere_usuario():
+    inserido = Usuarios(login='ingrid', senha='456')
+    inserido.save()
+
+def consulta_all_usuarios():
+    usuarios = Usuarios.query.all()
+    print(usuarios)
+
+
+
+
+if __name__ == '__main__':
+
+
+    #insere_usuario()
+    consulta_all_usuarios()
+    # insere_pessoas()
+    # altera_pessoas()
+    # exclui_pessoas()
+    # consulta_pessoas()
+    # delete_pessoa_atividade()
+    # consulta_pessoa_atividades()

@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import ForeignKey
@@ -54,8 +54,31 @@ class Atividades(Base):
         db_session.delete(self)
         db_session.commit()
 
+
+class Usuarios(Base):
+    __tablename__ = 'usuarios'
+
+    id = Column(Integer, primary_key=True)
+    login = Column(String(10), unique=True)
+    senha = Column(String(16))
+
+    def __repr__(self):
+        return f'Usuario: {self.login}'
+
+    def save(self):
+        db_session.add(self)
+        db_session.commit()
+
+    def delete(self):
+        db_session.delete(self)
+        db_session.commit()
+
 def init_db():
     Base.metadata.create_all(bind=engine)
+
+#  Verifica todas as tabelas existentes no banco de dados
+inspector = inspect(engine)
+tabelas = inspector.get_table_names()
 
 if __name__ == '__main__':
     init_db()

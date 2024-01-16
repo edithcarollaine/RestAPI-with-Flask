@@ -3,18 +3,36 @@ import json
 from flask import Flask
 from flask import request
 
+from flask_httpauth import HTTPBasicAuth
+
 from flask_restful import Resource
 from flask_restful import Api
-from sqlalchemy.orm import joinedload
+
 
 from models import Pessoas
 from models import Atividades
+from models import Usuarios
 
+auth = HTTPBasicAuth()
 app = Flask(__name__)
 api = Api(app)
 
 
+@auth.verify_password
+def verifica(login, senha):
+    if not (login, senha):
+        return False
+    return Usuarios.query.filter_by(login=login, senha=senha).first()
+
+class Inicio(Resource):
+
+    def get(self):
+        response = {'mensagem': 'Seja bem vindo ao Flask'}
+        return response
+
+
 class PessoasAPI(Resource):
+
     def get(self, nome):
         pessoa = Pessoas.query.filter_by(nome_pessoa=nome).first()
         try:
@@ -30,6 +48,7 @@ class PessoasAPI(Resource):
             }
         return response
 
+    @auth.login_required()
     def put(self, nome):
         alterar = Pessoas.query.filter_by(nome_pessoa=nome).first()
         if alterar:
@@ -53,7 +72,7 @@ class PessoasAPI(Resource):
         else:
             return {'mensagem': 'Pessoa nao encontrada'}, 404
 
-
+    @auth.login_required()
     def delete(self, nome):
         remove = Pessoas.query.filter_by(nome_pessoa=nome).first()
         remove.delete()
@@ -103,6 +122,7 @@ class ListaAtividadeAPI(Resource):
 
         return response
 
+    @auth.login_required()
     def post(self):
         dados = json.loads(request.data)
         # verifica se o nome está no banco de dados
@@ -145,7 +165,7 @@ class AtividadesAPI(Resource):
 
         return atividades
 
-
+    @auth.login_required()
     def delete(self, pessoa):
         # Verifica se a pessoa está no database
         pessoa = Pessoas.query.filter_by(nome_pessoa=pessoa).first()
@@ -168,7 +188,7 @@ class AtividadesAPI(Resource):
         else:
             return {'status': 'Error', 'mensagem': 'Atividade não encontrada para esta pessoa'}, 404
 
-
+    @auth.login_required()
     def put(self, pessoa):
         alterar = Atividades.query.filter(Atividades.pessoa.has(nome_pessoa=pessoa)).first()
 
@@ -198,8 +218,9 @@ class AtividadesAPI(Resource):
 
 
 # ROTAS
-api.add_resource(PessoasAPI, '/pessoa/<string:nome>')
-api.add_resource(ListaPessoasAPI, '/pessoa')
+api.add_resource(Inicio, '/')
+api.add_resource(PessoasAPI, '/pessoas/<string:nome>')
+api.add_resource(ListaPessoasAPI, '/pessoas')
 api.add_resource(ListaAtividadeAPI, '/atividades')
 api.add_resource(AtividadesAPI, '/atividades/<string:pessoa>')
 
